@@ -1,23 +1,37 @@
-import os
+import streamlit as st
+import pandas as pd
+import numpy as np
+import joblib
 from pathlib import Path
+import sys
+import os
 
-# Project paths
-BASE_DIR = Path(__file__).parent
-DATA_DIR = BASE_DIR / "data"
-MODELS_DIR = BASE_DIR / "models"
-NOTEBOOKS_DIR = BASE_DIR / "notebooks"
-APP_DIR = BASE_DIR / "app"
+# ========== FIXED: CORRECT PATH TO CONFIG ==========
+# Get the absolute path to the parent directory (Somali-Disease-Detection folder)
+current_file = Path(__file__).resolve()  # This is streamlit_app.py
+project_root = current_file.parent.parent  # Go up two levels to Somali-Disease-Detection folder
 
-# Data file
-DATA_FILE = DATA_DIR / "somali_synthetic_diseases.csv"
+# Add the project root to Python path
+sys.path.append(str(project_root))
 
-# Model parameters
-TEST_SIZE = 0.2
-RANDOM_STATE = 42
+# Now import from config - it should work!
+try:
+    from config import MODELS_DIR, DATA_FILE
+    print(f"✅ Config loaded successfully!")
+    print(f"📁 Project root: {project_root}")
+    print(f"📁 Models dir: {MODELS_DIR}")
+except ImportError as e:
+    st.error(f"❌ Failed to import config: {e}")
+    st.error(f"Looking in: {project_root}")
+    # Create fallback paths
+    MODELS_DIR = project_root / "models"
+    DATA_FILE = project_root / "data" / "somali_synthetic_diseases.csv"
 
-# Create directories if they don't exist
-for dir_path in [DATA_DIR, MODELS_DIR, NOTEBOOKS_DIR, APP_DIR]:
-    dir_path.mkdir(exist_ok=True)
-
-print(f"✅ Config loaded. Data file path: {DATA_FILE}")
-print(f"✅ Directories checked/created.")
+# ========== REST OF YOUR APP CODE CONTINUES HERE ==========
+# Set page config
+st.set_page_config(
+    page_title="Somali Disease Detection AI",
+    page_icon="🏥",
+    layout="wide"
+)
+# ... continue with the rest of your app code ...
